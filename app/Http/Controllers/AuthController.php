@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Validator;
 
-class AuthController extends Controller
+class AuthController extends BaseController
 {
     /**
      * Create a new AuthController instance.
@@ -52,15 +52,11 @@ class AuthController extends Controller
         ]);
         if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
-        }
-        $user = User::create(array_merge(
-            $validator->validated(),
-            ['password' => bcrypt($request->password)]
-        ));
-        return response()->json([
-            'message' => 'User successfully registered',
-            'user' => $user
-        ], 201);
+        } 
+        $attributes = $validator->validated();
+        $attributes['password'] = bcrypt($request->password); 
+        $user = User::create($attributes); 
+        return $this->sendSuccess($user,"User successfully registered");
     }
 
     /**

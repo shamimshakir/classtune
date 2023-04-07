@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CampaignController;
-use App\Http\Controllers\ParticipationController;
+use App\Http\Controllers\ParticipatorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,9 +28,9 @@ Route::middleware('api')->group(function () {
         Route::apiResource('/campaigns', CampaignController::class);
         Route::post('/campaigns/status/{campaign}', [CampaignController::class, 'changeStatus']);
 
-        Route::get('/participations', [ParticipationController::class, 'index']);
-        Route::post('/participations/join', [ParticipationController::class, 'join']);
-        Route::get('/participations/leave/{participation}', [ParticipationController::class, 'leave']);
+        Route::get('/participations', [ParticipatorController::class, 'index']);
+        Route::post('/participations/join', [ParticipatorController::class, 'join']);
+        Route::get('/participations/{participation}/leave', [ParticipatorController::class, 'leave']);
     });
 });
 

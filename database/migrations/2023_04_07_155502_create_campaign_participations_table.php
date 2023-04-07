@@ -10,7 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('participations', function (Blueprint $table) {
+        Schema::create('participators', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('campaign_id')->references('id')->on('campaigns')->onDelete('cascade');
@@ -23,6 +23,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('participations');
+        Schema::dropIfExists('participators');
     }
 };
