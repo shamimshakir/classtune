@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\participator\JoinParticipatorRequest;
 use Illuminate\Http\Request;
 use App\Models\Participator;
 use Illuminate\Support\Facades\Auth;
@@ -21,16 +22,9 @@ class ParticipatorController extends BaseController
     /**
      * Join to a campaign.
      */
-    public function join(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'campaign_id' => 'required',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors()->toJson(), 400);
-        }
-        $attributes = $validator->validated();
+    public function join(JoinParticipatorRequest $request)
+    { 
+        $attributes = $request->validated();
         $attributes['user_id'] = auth()->id(); 
         $participator = Participator::create($attributes); 
         return $this->sendSuccess($participator, 'Campaign joined successfully');

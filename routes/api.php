@@ -28,9 +28,9 @@ Route::middleware('api')->group(function () {
         Route::apiResource('/campaigns', CampaignController::class);
         Route::post('/campaigns/status/{campaign}', [CampaignController::class, 'changeStatus']);
 
-        Route::get('/participations', [ParticipatorController::class, 'index']);
-        Route::post('/participations/join', [ParticipatorController::class, 'join']);
-        Route::get('/participations/{participation}/leave', [ParticipatorController::class, 'leave']);
+        Route::get('/participators', [ParticipatorController::class, 'index']);
+        Route::post('/participators/join', [ParticipatorController::class, 'join']);
+        Route::get('/participators/{participator}/leave', [ParticipatorController::class, 'leave']);
     });
 });
 

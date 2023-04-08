@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\auth\LoginRequest;
+use App\Http\Requests\auth\RegisterRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -23,16 +25,9 @@ class AuthController extends BaseController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'mobile' => 'required|numeric',
-            'password' => 'required|string|min:6',
-        ]);
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-        if (!$token = auth()->attempt($validator->validated())) {
+    public function login(LoginRequest $request)
+    { 
+        if (!$token = auth()->attempt($request->validated())) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
         return $this->createNewToken($token);
@@ -42,18 +37,9 @@ class AuthController extends BaseController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|between:2,100',
-            'email' => 'required|string|email|max:100|unique:users',
-            'mobile' => 'required|string|max:15|unique:users',
-            'password' => 'required|string|confirmed|min:6',
-        ]);
-        if ($validator->fails()) {
-            return response()->json($validator->errors()->toJson(), 400);
-        } 
-        $attributes = $validator->validated();
+    public function register(RegisterRequest $request)
+    { 
+        $attributes = $request->validated();
         $attributes['password'] = bcrypt($request->password); 
         $user = User::create($attributes); 
         return $this->sendSuccess($user,"User successfully registered");
