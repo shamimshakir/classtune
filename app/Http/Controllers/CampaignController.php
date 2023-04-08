@@ -1,16 +1,21 @@
 <?php
 
 namespace App\Http\Controllers;
- 
+
 use App\Http\Requests\campaign\StoreCampaignRequest;
 use App\Http\Requests\campaign\UpdateCampaignRequest;
 use App\Models\Campaign;
+use App\Services\Campaigns\CampaignService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; 
+use Illuminate\Support\Facades\Auth;
 use Validator;
 
 class CampaignController extends BaseController
 {
+    public function __construct(
+        protected CampaignService $service
+    ) {
+    }
     /**
      * Display a listing of the resource.
      */
@@ -23,10 +28,10 @@ class CampaignController extends BaseController
      * Store a newly created resource in storage.
      */
     public function store(StoreCampaignRequest $request)
-    {   
+    {
         $attributes = $request->validated();
-        $attributes['owner_id'] = auth()->id(); 
-        $campaign = Campaign::create($attributes); 
+        $attributes['owner_id'] = auth()->id();
+        $campaign = $this->service->store($attributes);
         return $this->sendSuccess($campaign, 'Campaign successfully created');
     }
 
@@ -34,7 +39,7 @@ class CampaignController extends BaseController
      * Display the specified resource.
      */
     public function show(Campaign $campaign)
-    { 
+    {
         return $this->sendSuccess($campaign->load('owner'));
     }
 
@@ -42,11 +47,11 @@ class CampaignController extends BaseController
      * Update the specified resource in storage.
      */
     public function update(UpdateCampaignRequest $request, Campaign $campaign)
-    { 
+    {
         if (Auth::id() !== $campaign->owner_id) {
             abort(403, 'Unauthorized action.');
         } 
-        $uCampaign = $campaign->update($request->validated());
+        $uCampaign = $this->service->update($request->validated(), $campaign);
         return $this->sendSuccess($uCampaign, 'Campaign updated successfully');
     }
 
@@ -55,7 +60,7 @@ class CampaignController extends BaseController
      */
     public function destroy(Campaign $campaign)
     {
-        $campaign->delete(); 
+        $campaign->delete();
         return $this->sendSuccess($campaign, 'Campaign deleted successfully');
     }
 

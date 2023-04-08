@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\auth\LoginRequest;
 use App\Http\Requests\auth\RegisterRequest;
+use App\Services\Auth\AuthService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Validator;
 
 class AuthController extends BaseController
-{
+{ 
     /**
      * Create a new AuthController instance.
      *
@@ -40,8 +41,8 @@ class AuthController extends BaseController
     public function register(RegisterRequest $request)
     { 
         $attributes = $request->validated();
-        $attributes['password'] = bcrypt($request->password); 
-        $user = User::create($attributes); 
+        $attributes['password'] = bcrypt($request->password);  
+        $user = (new AuthService())->register($attributes);
         return $this->sendSuccess($user,"User successfully registered");
     }
 
