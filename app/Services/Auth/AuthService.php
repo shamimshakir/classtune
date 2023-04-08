@@ -6,8 +6,8 @@ use App\Models\User;
 
 class AuthService
 {  
-    public function register(array $userData): User
+    public function register(array $data): User
     {
-        return User::create($userData);  
+        return User::create($data);  
     } 
 }

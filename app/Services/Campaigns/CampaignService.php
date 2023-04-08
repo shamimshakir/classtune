@@ -6,13 +6,13 @@ use App\Models\Campaign;
 
 class CampaignService
 {  
-    public function store(array $campaignData): Campaign
+    public function store(array $attributes): Campaign
     {
-        return Campaign::create($campaignData);  
+        return Campaign::query()->create($attributes);  
     }
  
-    public function update(array $campaignData, Campaign $campaign)
+    public function update(array $attributes, Campaign $campaign)
     { 
-        return $campaign->update($campaignData); 
+        return $campaign->update($attributes); 
     }
 }

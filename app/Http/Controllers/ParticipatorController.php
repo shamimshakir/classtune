@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\participator\JoinParticipatorRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\Participator;
 use Illuminate\Support\Facades\Auth;
@@ -13,29 +14,34 @@ class ParticipatorController extends BaseController
     /**
      * Display all participation of logged user
      */
-    public function index()
+    public function index(): JsonResponse
     { 
-        return $this->sendSuccess(
-            Participator::where('user_id', auth()->id())->get()
-        );
+        $participators = Participator::query()->where('user_id', auth()->id())->get();
+        return $this->sendSuccess(data: $participators);
     }
     /**
      * Join to a campaign.
      */
-    public function join(JoinParticipatorRequest $request)
+    public function join(JoinParticipatorRequest $request): JsonResponse
     { 
         $attributes = $request->validated();
         $attributes['user_id'] = auth()->id(); 
-        $participator = Participator::create($attributes); 
-        return $this->sendSuccess($participator, 'Campaign joined successfully');
+        $participator = Participator::query()->create($attributes);  
+
+        if ($participator) {
+            return $this->sendSuccess(
+                message: 'Campaign joined successfully' 
+            );
+        }
+        return $this->sendFailed();
     }
 
     /**
      * Leave from a campaign.
      */
-    public function leave(Participator $participator)
+    public function leave(Participator $participator): JsonResponse
     {
-        $participator->delete(); 
-        return $this->sendSuccess($participator, 'Campaign left successfully');
+        $participator->delete();  
+        return $this->sendSuccess(message: 'Campaign left successfully');
     }
 }

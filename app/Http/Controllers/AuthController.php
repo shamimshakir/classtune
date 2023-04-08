@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\auth\LoginRequest;
 use App\Http\Requests\auth\RegisterRequest;
 use App\Services\Auth\AuthService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -26,7 +27,7 @@ class AuthController extends BaseController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): JsonResponse
     { 
         if (!$token = auth()->attempt($request->validated())) {
             return response()->json(['error' => 'Unauthorized'], 401);
@@ -38,12 +39,17 @@ class AuthController extends BaseController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register(RegisterRequest $request)
+    public function register(RegisterRequest $request): JsonResponse
     { 
         $attributes = $request->validated();
         $attributes['password'] = bcrypt($request->password);  
-        $user = (new AuthService())->register($attributes);
-        return $this->sendSuccess($user,"User successfully registered");
+        $user = (new AuthService())->register($attributes); 
+        if ($user) {
+            return $this->sendSuccess(
+                message: 'User registered successfully' 
+            );
+        }
+        return $this->sendFailed();
     }
 
     /**
@@ -51,10 +57,10 @@ class AuthController extends BaseController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function logout()
+    public function logout(): JsonResponse
     {
-        auth()->logout();
-        return response()->json(['message' => 'User successfully signed out']);
+        auth()->logout(); 
+        return $this->sendSuccess(message: 'User successfully signed out' );
     }
 
     /**
@@ -62,7 +68,7 @@ class AuthController extends BaseController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function userProfile()
+    public function userProfile(): JsonResponse
     {
         return response()->json(auth()->user());
     }
@@ -73,7 +79,7 @@ class AuthController extends BaseController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function createNewToken($token)
+    protected function createNewToken($token): JsonResponse
     {
         return response()->json([
             'access_token' => $token,
