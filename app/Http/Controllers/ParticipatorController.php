@@ -30,7 +30,7 @@ class ParticipatorController extends BaseController
 
         if ($participator) {
             return $this->sendSuccess(
-                message: 'Campaign joined successfully' 
+                message: __('messages.participator.join') 
             );
         }
         return $this->sendFailed();
@@ -42,6 +42,6 @@ class ParticipatorController extends BaseController
     public function leave(Participator $participator): JsonResponse
     {
         $participator->delete();  
-        return $this->sendSuccess(message: 'Campaign left successfully');
+        return $this->sendSuccess(message: __('messages.participator.leave') );
     }
 }

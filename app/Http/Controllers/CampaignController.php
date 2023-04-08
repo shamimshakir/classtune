@@ -44,7 +44,7 @@ class CampaignController extends BaseController
 
         if ($campaign) {
             return $this->sendSuccess(
-                message: 'Campaign created successfully' 
+                message: __('messages.campaign.store') 
             );
         }
         return $this->sendFailed();
@@ -71,8 +71,8 @@ class CampaignController extends BaseController
             ->update($request->validated(), $campaign); 
 
         if ($campaign) {
-            return $this->sendSuccess(
-                message: 'Campaign updated successfully' 
+            return $this->sendSuccess( 
+                message: __('messages.campaign.update') 
             );
         }
         return $this->sendFailed();
@@ -84,7 +84,7 @@ class CampaignController extends BaseController
     public function destroy(Campaign $campaign): JsonResponse
     {
         $campaign->delete();
-        return $this->sendSuccess(message: 'Campaign deleted successfully');
+        return $this->sendSuccess(message: __('messages.campaign.delete') );
     }
 
     /**
@@ -98,6 +98,6 @@ class CampaignController extends BaseController
             $campaign->status = CampaignStatus::ONGOING->value;
         }
         $campaign->save();
-        return $this->sendSuccess(message: 'Campaign status changed successfully');
+        return $this->sendSuccess(message: __('messages.campaign.status'));
     }
 }

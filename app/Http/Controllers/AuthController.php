@@ -46,7 +46,7 @@ class AuthController extends BaseController
         $user = (new AuthService())->register($attributes); 
         if ($user) {
             return $this->sendSuccess(
-                message: 'User registered successfully' 
+                message: __('messages.auth.register') 
             );
         }
         return $this->sendFailed();
@@ -60,7 +60,7 @@ class AuthController extends BaseController
     public function logout(): JsonResponse
     {
         auth()->logout(); 
-        return $this->sendSuccess(message: 'User successfully signed out' );
+        return $this->sendSuccess(message: __('messages.auth.logout'));
     }
 
     /**
